@@ -1,0 +1,33 @@
+<html>
+<head>
+	<title>Diceware Random Passphrase Generator</title>
+	<script src="diceware.js"></script>
+</head>
+
+<body>
+</body>
+
+<script>
+	var passPhrase = "";
+	// create 32byte seed
+	var array = new Uint32Array(6);
+	
+	for (i=0; i<5; i++){
+		// translate seed to faction
+		var seed = '0.' + window.crypto.getRandomValues(array)[i];
+		// use seed to get random diceware word
+		var rndNum = Math.floor((seed * diceware.length) + 1);
+		
+		// add space between words
+		passPhrase += (i == 0 ? "" : " ") + diceware[rndNum].word;
+		
+		// raw data
+		console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
+	}
+	
+	// display passphrase
+	document.body.innerHTML = passPhrase;
+	
+</script>
+
+</html>

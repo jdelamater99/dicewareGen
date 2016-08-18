@@ -2,6 +2,11 @@
 <head>
 	<title>Diceware Random Passphrase Generator</title>
 	<script src="diceware.js"></script>
+	<style>
+		body {
+			font: 3em arial, sans-serif;
+		}
+	</style>
 </head>
 
 <body>
@@ -9,6 +14,8 @@
 
 <script>
 	var passPhrase = "";
+	var genNums = "";
+	
 	// create 32byte seed
 	var array = new Uint32Array(6);
 	
@@ -20,6 +27,8 @@
 		
 		// add space between words
 		passPhrase += (i == 0 ? "" : " ") + diceware[rndNum].word;
+		// store generated numbers
+		genNums += (i == 0 ? "" : "-") + rndNum;
 		
 		// raw data
 		console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
@@ -27,6 +36,8 @@
 	
 	// display passphrase
 	document.body.innerHTML = passPhrase;
+	// + "<p>store these numbers to regenerate passphrase (eventually)<br>" + genNums + "</p>";
+
 	
 </script>
 

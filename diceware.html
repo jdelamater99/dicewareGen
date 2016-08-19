@@ -3,14 +3,10 @@
 	<title>Diceware Random Passphrase Generator</title>
 	<script src="diceware.js"></script>
 	<style>
-		body {
-			font: 3em arial, sans-serif;
-		}
-		
-		p {
-			width: 525px;
-			font: .25em arial, sans-serif;
-		}
+        * { font-family: arial, sans-serif; }
+		h1 { font-size: 3em; }
+        div.codes { font-size: 1.5em; margin-bottom: 25px; }
+		div.attribute { width: 525px; font-size: .75em; }
 	</style>
 </head>
 
@@ -18,26 +14,48 @@
 </body>
 
 <script>
-	var passPhrase = "";
-	
-	// create 32byte seed
-	var array = new Uint32Array(6);
-	
-	for (i=0; i<5; i++){
-		// translate seed to faction
-		var seed = '0.' + window.crypto.getRandomValues(array)[i];
-		// use seed to get random diceware word
-		var rndNum = Math.floor((seed * diceware.length) + 1);
-		
-		// add space between words
-		passPhrase += (i == 0 ? "" : " ") + diceware[rndNum].word;
-		
-		// view raw data in browser console
-		console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
-	}
+    function el(s) {
+        return document.getElementById(s);    
+    }
+    
+	function generatePassPhrase() {
+        // create 32byte seed
+        var array = new Uint32Array(6);
+        var passPhrase = new Array;
+
+        for (passPhrase=["",""],i=0; i<5; i++){
+            // translate seed to faction
+            var seed = '0.' + window.crypto.getRandomValues(array)[i];
+            // use seed to get random diceware word
+            var rndNum = Math.floor((seed * diceware.length) + 1);
+
+            // add space between words
+            passPhrase[0] += (i == 0 ? "" : " ") + diceware[rndNum].word;
+            // store generated numbers
+            passPhrase[1] += (i == 0 ? "" : "-") + rndNum;
+
+            // view raw data in browser console
+            console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
+        }
+        
+        // output array
+        console.log (passPhrase);
+        return passPhrase;
+    }
+    
+    // generate random pass phrase
+    var randomWords = generatePassPhrase();
+    // get indexes
+    var genNum = randomWords[1];
+    // get pass phrase
+    var passPhrase = randomWords[0];
+    
+    // save codes
+    var codes = "<div>Save these numbers in a safe place to view pass phrase again later</div>";
+    codes += "<div class='codes'>" + genNum + "</div>";
 	
 	// attribution and license
-	var license = "\n\n<p>";
+	var license = "\n\n<div class='attribute'>";
 	license += "\n\tDiceware";
 	license += "\n\t<br><a href='http://world.std.com/~reinhold/diceware.html' target='_new'>http://world.std.com/~reinhold/diceware.html</a>";
 	license += "\n\t<br><br>Copyright &copy; 1995-2016, Arnold G. Reinhold, Cambridge, Massachusetts USA.";
@@ -46,10 +64,14 @@
 	license += "\n\t<br><a href='http://creativecommons.org/licenses/by/3.0/' target='_new'>http://creativecommons.org/licenses/by/3.0/</a>";
 	license += "\n\t<br><br>Diceware is a trademark of A G Reinhold.";
 	license += "\n\t<br><br>First published on usenet's sci.crypt.research 1995-8-1";
-	license += "\n</p>";
-
-	// display passphrase
-	document.body.innerHTML = passPhrase + license;
+	license += "\n</div>";
+    
+	// build page
+    document.body.innerHTML += "<div id='passPhraseOutput'></div>"
+	document.body.innerHTML += codes + license;
+    
+    // populate pass phrase
+    el('passPhraseOutput').innerHTML = "<h1>" + passPhrase + "</h1>";
 	
 </script>
 

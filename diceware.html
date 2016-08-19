@@ -6,6 +6,11 @@
 		body {
 			font: 3em arial, sans-serif;
 		}
+		
+		p {
+			width: 525px;
+			font: .25em arial, sans-serif;
+		}
 	</style>
 </head>
 
@@ -14,7 +19,6 @@
 
 <script>
 	var passPhrase = "";
-	var genNums = "";
 	
 	// create 32byte seed
 	var array = new Uint32Array(6);
@@ -27,17 +31,25 @@
 		
 		// add space between words
 		passPhrase += (i == 0 ? "" : " ") + diceware[rndNum].word;
-		// store generated numbers
-		genNums += (i == 0 ? "" : "-") + rndNum;
 		
-		// raw data
+		// view raw data in browser console
 		console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
 	}
 	
-	// display passphrase
-	document.body.innerHTML = passPhrase;
-	// + "<p>store these numbers to regenerate passphrase (eventually)<br>" + genNums + "</p>";
+	// attribution and license
+	var license = "\n\n<p>";
+	license += "\n\tDiceware";
+	license += "\n\t<br><a href='http://world.std.com/~reinhold/diceware.html' target='_new'>http://world.std.com/~reinhold/diceware.html</a>";
+	license += "\n\t<br><br>Copyright &copy; 1995-2016, Arnold G. Reinhold, Cambridge, Massachusetts USA.";
+	license += "\n\t<br><br>The author hereby grants rights for free, non-commercial, electronic distribution, with attribution, of this entire text. Linking to this page or the word list, including for commercial use, is permitted and encouraged. All other rights reserved. Reasonable requests for other uses, such as translations, are encouraged and will be carefully and promptly considered. This information is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
+	license += "\n\t<br><br>To the extent that a word list is protected by copyright, A G Reinhold licenses its rights to the English Diceware Wordlist under the Creative Commons CC-BY 3.0 license.";
+	license += "\n\t<br><a href='http://creativecommons.org/licenses/by/3.0/' target='_new'>http://creativecommons.org/licenses/by/3.0/</a>";
+	license += "\n\t<br><br>Diceware is a trademark of A G Reinhold.";
+	license += "\n\t<br><br>First published on usenet's sci.crypt.research 1995-8-1";
+	license += "\n</p>";
 
+	// display passphrase
+	document.body.innerHTML = passPhrase + license;
 	
 </script>
 

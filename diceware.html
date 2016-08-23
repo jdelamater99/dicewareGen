@@ -1,78 +1,102 @@
 <html>
 <head>
 	<title>Diceware Random Passphrase Generator</title>
-	<script src="diceware.js"></script>
+	<script src="dicewareEFF.js"></script>
 	<style>
-        * { font-family: arial, sans-serif; }
-		h1 { font-size: 3em; }
-        div.codes { font-size: 1.5em; margin-bottom: 25px; }
-		div.attribute { width: 525px; font-size: .75em; }
+		#passPhrase {
+			font: 3em arial, sans-serif;
+		}
+		
+		p {
+			width: 525px;
+			font: .75em arial, sans-serif;
+		}
 	</style>
 </head>
 
-<body>
+<body onload="generatePassPhrase(5);">
+    <select id="numWords" onChange="generatePassPhrase()">
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+    </select>
+    
+    <!--- Placeholder for passphrase --->
+    <div id="passPhrase"></div>
+    
+    <!--- License and Attribution --->
+    <p>
+    Diceware<br>
+    <a href="http://world.std.com/~reinhold/diceware.html">http://world.std.com/~reinhold/diceware.html</a>
+    <br><br>
+    Copyright &copy; 1995-2016, Arnold G. Reinhold, Cambridge, Massachusetts USA.
+    <br><br>
+    The author hereby grants rights for free, non-commercial, electronic distribution, with attribution, of this entire text. Linking to this page or the word list, including for commercial use, is permitted and encouraged. All other rights reserved. Reasonable requests for other uses, such as translations, are encouraged and will be carefully and promptly considered. This information is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    <br><br>
+    To the extent that a word list is protected by copyright, A G Reinhold licenses its rights to the English Diceware Wordlist under the Creative Commons CC-BY 3.0 license.
+    <br>
+    <a href="http://creativecommons.org/licenses/by/3.0/">http://creativecommons.org/licenses/by/3.0/</a>
+    <br><br>
+    Diceware is a trademark of A G Reinhold.
+    <br><br>
+    First published on usenet's sci.crypt.research 1995-8-1
+    <br><br>
+    Alternate word list provided by EFF
+    <br>
+    <a href="https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases">https://www.eff.org/deeplinks/2016/07/new-wordlists-random-passphrases</a>
+    </p>
 </body>
 
 <script>
     function el(s) {
-        return document.getElementById(s);    
+        return document.getElementById(s);
+    }
+    // convert words to Title Case
+    function toTitleCase(s) {
+        var arr = s.split("");
+        arr[0] = arr[0].toUpperCase();
+        s = arr.join("");
+        
+        //console.log (s);
+        return s;
     }
     
-	function generatePassPhrase() {
+	var passPhrase = "";
+    var words = 5;
+	
+    function generatePassPhrase(words){
+        //if words isn't passed in, use 5 as the default number
+        if (words === undefined)
+            words = 5;
+        
+        // limit words to 10;
+        if (words > 10)
+            words = 10;
+        
         // create 32byte seed
-        var array = new Uint32Array(6);
-        var passPhrase = new Array;
+        var array = new Uint32Array(words);
 
-        for (passPhrase=["",""],i=0; i<5; i++){
+        for (i=0; i<words; i++){
             // translate seed to faction
             var seed = '0.' + window.crypto.getRandomValues(array)[i];
             // use seed to get random diceware word
             var rndNum = Math.floor((seed * diceware.length) + 1);
 
             // add space between words
-            passPhrase[0] += (i == 0 ? "" : " ") + diceware[rndNum].word;
-            // store generated numbers
-            passPhrase[1] += (i == 0 ? "" : "-") + rndNum;
+            passPhrase += (i == 0 ? "" : " ") + toTitleCase(diceware[rndNum].word);
 
             // view raw data in browser console
+            // create console header
+            if (i == 0 ) console.log ("index :: (dice roll) word\n=========================");
             console.log (rndNum + " :: " + "(" + diceware[rndNum].id + ") " + diceware[rndNum].word);
         }
         
-        // output array
-        console.log (passPhrase);
-        return passPhrase;
+        // display passphrase
+        el("passPhrase").innerHTML = passPhrase;
     }
-    
-    // generate random pass phrase
-    var randomWords = generatePassPhrase();
-    // get indexes
-    var genNum = randomWords[1];
-    // get pass phrase
-    var passPhrase = randomWords[0];
-    
-    // save codes
-    var codes = "<div>Save these numbers in a safe place to view pass phrase again later</div>";
-    codes += "<div class='codes'>" + genNum + "</div>";
-	
-	// attribution and license
-	var license = "\n\n<div class='attribute'>";
-	license += "\n\tDiceware";
-	license += "\n\t<br><a href='http://world.std.com/~reinhold/diceware.html' target='_new'>http://world.std.com/~reinhold/diceware.html</a>";
-	license += "\n\t<br><br>Copyright &copy; 1995-2016, Arnold G. Reinhold, Cambridge, Massachusetts USA.";
-	license += "\n\t<br><br>The author hereby grants rights for free, non-commercial, electronic distribution, with attribution, of this entire text. Linking to this page or the word list, including for commercial use, is permitted and encouraged. All other rights reserved. Reasonable requests for other uses, such as translations, are encouraged and will be carefully and promptly considered. This information is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
-	license += "\n\t<br><br>To the extent that a word list is protected by copyright, A G Reinhold licenses its rights to the English Diceware Wordlist under the Creative Commons CC-BY 3.0 license.";
-	license += "\n\t<br><a href='http://creativecommons.org/licenses/by/3.0/' target='_new'>http://creativecommons.org/licenses/by/3.0/</a>";
-	license += "\n\t<br><br>Diceware is a trademark of A G Reinhold.";
-	license += "\n\t<br><br>First published on usenet's sci.crypt.research 1995-8-1";
-	license += "\n</div>";
-    
-	// build page
-    document.body.innerHTML += "<div id='passPhraseOutput'></div>"
-	document.body.innerHTML += codes + license;
-    
-    // populate pass phrase
-    el('passPhraseOutput').innerHTML = "<h1>" + passPhrase + "</h1>";
-	
 </script>
 
 </html>
